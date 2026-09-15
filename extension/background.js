@@ -1,6 +1,7 @@
 import {buildRules, extractAllowedUrl, parseAllowedUrl, TOKEN_PATTERN, HOST_PATTERN} from './policy.js';
 
 const protectedTabs = new Set();
+let audioAssistEnabled = false;
 const rootUrl = chrome.runtime.getURL('');
 let chain = Promise.resolve();
 const ready = initialize();
@@ -12,6 +13,7 @@ function serial(task) {
 function report(error) { console.error('GSV:', error.message || String(error)); }
 
 async function initialize() {
+  audioAssistEnabled = (await chrome.storage.local.get('audioAssist')).audioAssist === true;
   // Session rules are the source of truth, including after a worker suspension.
   const rules = await chrome.declarativeNetRequest.getSessionRules();
   const ids = rules.find(rule => rule.id === 1)?.condition.tabIds ?? [];
@@ -72,7 +74,7 @@ async function getState() {
       tabs.push({id, url: tab.url || tab.pendingUrl || '', title: tab.title || '閲覧タブ'});
     } catch { /* onRemoved will prune the rules. */ }
   }
-  return {version: chrome.runtime.getManifest().version, tabs, bookmarks: await getBookmarks()};
+  return {version: chrome.runtime.getManifest().version, tabs, bookmarks: await getBookmarks(), audioAssist: audioAssistEnabled};
 }
 async function home() {
   const url = chrome.runtime.getURL('home.html');
@@ -87,7 +89,7 @@ async function handle(message, sender) {
   const source = (sender.url || '').split(/[?#]/)[0];
   const internal = source === rootUrl + 'home.html' || source === rootUrl + 'popup.html';
   const fromProtected = sender.tab && protectedTabs.has(sender.tab.id);
-  if (message.type === 'is-protected') return {protected: Boolean(fromProtected), navigationPatterns: [TOKEN_PATTERN, HOST_PATTERN]};
+  if (message.type === 'is-protected') return {protected: Boolean(fromProtected), navigationPatterns: [TOKEN_PATTERN, HOST_PATTERN], audioAssist: audioAssistEnabled};
   if (message.type === 'navigate' && fromProtected) {
     const url = parseAllowedUrl(message.url);
     if (!url) throw new Error('このリンクは許可対象外です。');
@@ -97,6 +99,11 @@ async function handle(message, sender) {
   if (!internal) throw new Error('この操作は拡張機能のホームから行ってください。');
   switch (message.type) {
     case 'state': return getState();
+    case 'audio-assist-set':
+      if (typeof message.enabled !== 'boolean') throw new Error('音声設定を確認してください。');
+      await chrome.storage.local.set({audioAssist: message.enabled});
+      audioAssistEnabled = message.enabled;
+      return {enabled: audioAssistEnabled};
     case 'open': return openProtected(message.url);
     case 'home': await home(); return {};
     case 'focus': {
@@ -179,3 +186,7 @@ chrome.webNavigation.onCommitted.addListener(event => {
 chrome.runtime.onInstalled.addListener(() => { serial(home).catch(report); });
 chrome.runtime.onStartup.addListener(() => { ready.catch(report); });
 ready.catch(report);
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.audioAssist) audioAssistEnabled = changes.audioAssist.newValue === true;
+});

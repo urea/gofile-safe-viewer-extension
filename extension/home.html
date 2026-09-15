@@ -22,6 +22,8 @@
         <input id="url-input" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="gofile・twimg・mvfile を含むHTTPS URL" required>
         <button id="open-button" class="button button-primary" type="submit">開く</button>
       </form>
+      <label class="audio-option" for="audio-assist-toggle"><input id="audio-assist-toggle" type="checkbox" aria-describedby="audio-assist-hint">音声ONを補助</label>
+      <p id="audio-assist-hint" class="option-hint">リンク先の動画が対象。ページ操作後にミュート解除を補助します。</p>
       <p id="open-status" class="form-status" aria-live="polite"></p>
     </section>
 
@@ -66,12 +68,16 @@
           <dd>X上で検索してリンクを探す場合は「Xを開いて探す」を押してください。リンクが手元にある場合は、上部の入力欄に貼り付けて「開く」を押します。また見たいページは「保護中のタブ」の「保存」からブックマークに追加できます。</dd>
         </div>
         <div>
+          <dt>音声ONの補助</dt>
+          <dd>上部の設定をONにすると、リンク先でのクリックや再生操作後に、表示中の動画のミュート解除を補助します。X上の動画は対象外です。手動で再ミュートした動画や音量0の動画、ブラウザのタブ自体のミュートは変更しません。完全に無操作での音付き自動再生や、すべての独自プレイヤーへの対応は保証できません。</dd>
+        </div>
+        <div>
           <dt>しくみ</dt>
           <dd>このホームは拡張機能の操作画面です。ここから開いたChrome／Edgeのタブだけに閲覧制限をかけ、許可条件に合わない移動先や通信をブロックします。<strong>SAFE</strong> は制限が有効な目印です。ページや動画は元のサイトから直接読み込み、開発者の中継サーバーは使いません。</dd>
         </div>
         <div>
           <dt>ログイン・保存データ</dt>
-          <dd>ログイン状態は普段のブラウザと共通です。ブックマークはこのブラウザ内に保存し、開発者へ送信しません。利用状況の収集も行いません。</dd>
+          <dd>ログイン状態は普段のブラウザと共通です。ブックマークと音声補助の設定はこのブラウザ内に保存し、開発者へ送信しません。利用状況の収集も行いません。</dd>
         </div>
         <div>
           <dt>利用上の注意</dt>

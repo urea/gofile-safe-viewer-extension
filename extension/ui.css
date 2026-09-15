@@ -28,3 +28,7 @@
 @media (max-width:480px) { .site-header .quiet-label { display:none; } .site-header .brand { font-size:17px; } }
 
 .about-panel > summary { cursor:pointer; font-size:21px; font-weight:700; letter-spacing:-.04em; }
+
+.audio-option { display:flex; align-items:center; gap:8px; margin-top:18px; width:fit-content; cursor:pointer; font-size:14px; font-weight:650; }
+.audio-option input { width:16px; height:16px; padding:0; margin:0; accent-color:var(--mint-strong); }
+.option-hint { margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.7; }

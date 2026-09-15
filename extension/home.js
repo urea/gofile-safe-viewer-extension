@@ -24,7 +24,7 @@ function makeItem({ title, url }, { onOpen, onSave, onRemove, label }) {
   if (onRemove) { const remove = document.createElement("button"); remove.type = "button"; remove.className = "icon-button"; remove.title = label; remove.setAttribute("aria-label", label); remove.textContent = "×"; remove.addEventListener("click", async () => { remove.disabled = true; await onRemove(); remove.disabled = false; }); li.append(remove); }
   return li;
 }
-async function refresh() { const result = await send("state"); if (!result.ok) return setStatus(result.error || "状態を取得できませんでした。", true); state = { tabs: result.data?.tabs || [], bookmarks: result.data?.bookmarks || [] }; render(); }
+async function refresh() { const result = await send("state"); if (!result.ok) return setStatus(result.error || "状態を取得できませんでした。", true); state = { tabs: result.data?.tabs || [], bookmarks: result.data?.bookmarks || [] }; $("#audio-assist-toggle").checked = result.data?.audioAssist === true; render(); }
 function render() {
   if (isRendering) return; isRendering = true;
   const query = $("#bookmark-search").value.trim().toLowerCase();
@@ -51,3 +51,10 @@ $("#clear-bookmarks").addEventListener("click", async () => { if (!window.confir
 chrome.storage.onChanged.addListener(() => refresh());
 document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
 refresh();
+
+$("#audio-assist-toggle").addEventListener("change", async () => {
+  const toggle = $("#audio-assist-toggle"); toggle.disabled = true;
+  const result = await send("audio-assist-set", { enabled: toggle.checked });
+  setStatus(result.ok ? "音声補助の設定を保存しました。" : result.error || "設定を保存できませんでした。", !result.ok);
+  await refresh(); toggle.disabled = false;
+});

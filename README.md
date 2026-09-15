@@ -10,7 +10,7 @@ URLに `gofile`・`twimg`・`mvfile` を含むHTTPSリンクが対象です。X�
 
 ## できること
 
-- この拡張機能から開いたタブで、許可条件に合わないページ移動や通信をブロック。
+- この拡張機能から開いたタブで、許可条件に合わないページ移動や通信をブロック。通常のリンクやスクリプトによる移動は、可能な場合は元ページを残して取り消します。
 - ページが開くポップアップ、一部の自動ダウンロードや浮動広告を抑制。
 - Xを開いてリンクを探す、または手元のURLを貼り付けて開く。
 - 見たいページをブックマークに保存し、ホームから検索・再表示。
@@ -21,7 +21,7 @@ URLに `gofile`・`twimg`・`mvfile` を含むHTTPSリンクが対象です。X�
 
 Chrome / Microsoft Edge **129以降**が必要です。現在はストア未公開のため、GitHubのZIPを手動で読み込みます。ビルドやNode.jsのインストールは不要です。
 
-1. [最新Release](https://github.com/urea/gofile-safe-viewer-extension/releases/latest)の **Assets** から `GofileSafeViewerPC-v0.1.8.zip` をダウンロードします。
+1. [最新Release](https://github.com/urea/gofile-safe-viewer-extension/releases/latest)の **Assets** から `GofileSafeViewerPC-v0.1.9.zip` をダウンロードします。
 2. ZIPを展開し、今後も使用する場所にフォルダを置きます。読み込み後もこのフォルダは残してください。
 3. Chromeは `chrome://extensions`、Edgeは `edge://extensions` をアドレス欄に入力して開きます。
 4. **デベロッパーモード**を有効にし、**パッケージ化されていない拡張機能を読み込む**を選びます。
@@ -85,7 +85,8 @@ Chrome / Microsoft Edge **129以降**が必要です。現在はストア未公�
 
 Service Workerのキャッシュ・バックグラウンド通信、`blob:` / `data:`、外部アプリの起動、ブラウザメニューからの保存など、タブに紐付かない通信やブラウザ固有の動作は完全には制御しません。
 
-- **「ブロックされています」「ERR_BLOCKED_BY_CLIENT」と表示される：** URLや転送先が許可条件に合うかを確認してください。別の広告ブロッカーが原因になる場合もあります。
+- **元ページに「許可対象外への移動を止めました」と表示される：** ページ移動を取り消しています。そのまま閲覧を続けられます。
+- **「ブロックされています」「ERR_BLOCKED_BY_CLIENT」と表示される：** 移動先の通信を遮断した状態です。サーバーからの転送、保護処理の準備前の即時移動、アドレスバーからの移動などは、元ページを維持できずブロック画面になる場合があります。自動で戻る・再読み込みする処理は行いません。必要に応じて手動で戻ってください。別の広告ブロッカーが原因になる場合もあります。
 - **「コンテンツはありません」と表示される：** 閲覧先サイトの応答の場合もあります。言語設定やサイト側の条件なども影響するため、拡張機能の遮断とは限りません。
 - **再起動後にSAFEが付かない：** ホームからリンクを開き直してください。
 
@@ -101,16 +102,17 @@ npm test
 powershell -ExecutionPolicy Bypass -File scripts/package.ps1
 ```
 
-ブラウザ検証は `scripts/browser-smoke.cjs` で行います。Node.js、Playwright、Playwright版Chromium、OpenSSLが必要です。
+ブラウザ検証は `scripts/browser-smoke.cjs` と `scripts/navigation-smoke.cjs` で行います。Node.js、Playwright、Playwright版Chromium、OpenSSLが必要です。
 
 ```powershell
 npm install --no-save --package-lock=false playwright
 npx playwright install chromium
 node scripts/browser-smoke.cjs
+node scripts/navigation-smoke.cjs
 ```
 
 既存の環境は `PLAYWRIGHT_MODULE`、`PLAYWRIGHT_BROWSERS_PATH`、`OPENSSL_PATH` で指定できます。WindowsでのOpenSSLの既定値はGit for Windowsのインストール先です。検証は一時HTTPSサーバーと専用ブラウザプロファイルで行い、自己署名証明書を許可する設定はテスト用ブラウザだけに適用します。
 
-2026-09-15時点で単体テスト5件、Chromiumで14項目の検証が通過しています。許可・遮断、通常タブとの分離、ブックマーク、ポップアップ・添付応答の抑制、並行タブ作成、バックグラウンド休止・復帰、ブラウザ再起動を確認しています。Edgeでの実機確認や、すべての対応サイト・動画の再生を網羅した検証は行っていません。
+2026-09-15時点で単体テスト5件、Chromiumで既存機能14項目と遷移抑制11項目の検証が通過しています。許可・遮断、通常タブとの分離、ブックマーク、ポップアップ・添付応答の抑制、並行タブ作成、バックグラウンド休止・復帰、ブラウザ再起動を確認しています。遷移抑制の検証では、元文書・未保存入力・テスト動画の再生が維持され、遮断先へのリクエストが発生しないことを確認しています。Edgeでの実機確認や、すべての対応サイト・動画の再生を網羅した検証は行っていません。
 
 `_private/`（作業メモ）、`output/`（検証結果・プロファイル）、`dist/`（配布物）、`node_modules/` はGit管理対象外です。配布ZIPには `extension/` の中身だけを含めます。

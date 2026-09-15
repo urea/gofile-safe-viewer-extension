@@ -1,4 +1,4 @@
-import {buildRules, extractAllowedUrl, parseAllowedUrl} from './policy.js';
+import {buildRules, extractAllowedUrl, parseAllowedUrl, TOKEN_PATTERN, HOST_PATTERN} from './policy.js';
 
 const protectedTabs = new Set();
 const rootUrl = chrome.runtime.getURL('');
@@ -87,7 +87,7 @@ async function handle(message, sender) {
   const source = (sender.url || '').split(/[?#]/)[0];
   const internal = source === rootUrl + 'home.html' || source === rootUrl + 'popup.html';
   const fromProtected = sender.tab && protectedTabs.has(sender.tab.id);
-  if (message.type === 'is-protected') return {protected: Boolean(fromProtected)};
+  if (message.type === 'is-protected') return {protected: Boolean(fromProtected), navigationPatterns: [TOKEN_PATTERN, HOST_PATTERN]};
   if (message.type === 'navigate' && fromProtected) {
     const url = parseAllowedUrl(message.url);
     if (!url) throw new Error('このリンクは許可対象外です。');

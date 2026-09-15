@@ -19,6 +19,21 @@
       clearTimeout(tell.timer);
       tell.timer = setTimeout(() => { notice.remove(); notice = null; }, 3500);
     };
+    // Reuse the same URL patterns as the network rules. Cancel navigation before
+    // the document is replaced; DNR still blocks requests this guard cannot catch.
+    const navigationPatterns = response.data.navigationPatterns.map(pattern => new RegExp(pattern, 'i'));
+    function allowedDestination(value) {
+      try {
+        const url = new URL(value, location.href);
+        return url.protocol === 'https:' && !url.username && !url.password
+          && navigationPatterns.some(pattern => pattern.test(url.href.split('#')[0]));
+      } catch { return false; }
+    }
+    window.navigation?.addEventListener('navigate', event => {
+      if (!event.cancelable || allowedDestination(event.destination.url)) return;
+      event.preventDefault();
+      tell('許可対象外への移動を止めました。');
+    });
     function intercept(event) {
       const anchor = event.composedPath().find(node => node instanceof HTMLAnchorElement);
       if (!anchor) return;
@@ -28,7 +43,11 @@
       if (!/^https:\/\//i.test(href)) {
         stop(); tell('HTTPS以外のリンクは開けません。'); return;
       }
-      if (anchor.target && anchor.target.toLowerCase() !== '_self' || event.ctrlKey || event.metaKey || event.shiftKey || event.type === 'auxclick') {
+      if (!allowedDestination(href)) {
+        stop(); tell('許可対象外への移動を止めました。'); return;
+      }
+      const target = anchor.target || document.querySelector('base[target]')?.target;
+      if (target && target.toLowerCase() !== '_self' || event.ctrlKey || event.metaKey || event.shiftKey || event.type === 'auxclick') {
         stop();
         if (event.type === 'auxclick' && event.button !== 1) return;
         if (!event.isTrusted) return;

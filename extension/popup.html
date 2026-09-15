@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gofile Safe Viewer ブラウザ拡張版</title>
+  <link rel="stylesheet" href="ui.css">
+  <script type="module" src="popup.js"></script>
+</head>
+<body class="popup-page">
+  <main class="popup-shell">
+    <header class="popup-header"><span class="brand">Gofile <span>Safe Viewer</span><small class="edition-label">ブラウザ拡張版</small></span><span id="safe-badge" class="safe-badge">確認中</span></header>
+    <section class="current-card" aria-labelledby="current-heading">
+      <p class="eyebrow">CURRENT TAB</p>
+      <h1 id="current-heading">このページ</h1>
+      <p id="current-title" class="current-title">タブを確認しています</p>
+      <p id="current-url" class="current-url"></p>
+      <button id="bookmark-button" class="button button-secondary" type="button" disabled>ブックマークに保存</button>
+      <p id="popup-status" class="form-status" aria-live="polite"></p>
+    </section>
+    <form id="popup-open-form" class="popup-open-form" novalidate>
+      <label class="sr-only" for="popup-url-input">開くURL</label>
+      <input id="popup-url-input" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="URLを貼り付け">
+      <button id="popup-open-button" class="button button-primary" type="submit">開く</button>
+    </form>
+    <button id="home-button" class="home-button" type="button">ホームを開く</button>
+    <p class="popup-note">この拡張機能から開いたタブだけに保護が適用されます。</p>
+  </main>
+</body>
+</html>

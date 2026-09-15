@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gofile Safe Viewer ブラウザ拡張版</title>
+  <link rel="stylesheet" href="ui.css">
+  <script type="module" src="home.js"></script>
+</head>
+<body class="home-page">
+  <main class="app-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Gofile Safe Viewer ブラウザ拡張版 ホーム">Gofile <span>Safe Viewer</span><small class="edition-label">ブラウザ拡張版</small></a>
+      <span class="quiet-label">CHROME / EDGE</span>
+    </header>
+
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <h1 id="hero-title">リンクを開く</h1>
+      <button id="open-x-button" class="x-button" type="button">Xを開いて探す <span aria-hidden="true">↗</span></button>
+      <form id="open-form" class="open-form" novalidate>
+        <label class="sr-only" for="url-input">開くURL</label>
+        <input id="url-input" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="gofile・twimg・mvfile を含むHTTPS URL" required>
+        <button id="open-button" class="button button-primary" type="submit">開く</button>
+      </form>
+      <p id="open-status" class="form-status" aria-live="polite"></p>
+    </section>
+
+    <div class="content-grid">
+      <section class="panel bookmarks-panel" aria-labelledby="bookmarks-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">QUICK RETURN</p>
+            <h2 id="bookmarks-heading">ブックマーク</h2>
+          </div>
+          <button id="clear-bookmarks" class="text-button" type="button" hidden>すべて消去</button>
+        </div>
+        <label class="search-field" for="bookmark-search"><span class="sr-only">ブックマークを検索</span><input id="bookmark-search" type="search" placeholder="保存したURLを検索"></label>
+        <ul id="bookmarks-list" class="item-list" aria-live="polite"></ul>
+        <p id="bookmarks-empty" class="empty-state">まだ保存したURLはありません。<br>開いたページをここからすぐ戻せます。</p>
+        <p id="bookmarks-no-results" class="empty-state" hidden>一致するブックマークはありません。</p>
+      </section>
+
+      <section class="panel tabs-panel" aria-labelledby="tabs-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">SAFE SESSIONS</p>
+            <h2 id="tabs-heading">保護中のタブ</h2>
+          </div>
+          <span id="tab-count" class="count-pill">0</span>
+        </div>
+        <ul id="tabs-list" class="item-list" aria-live="polite"></ul>
+        <p id="tabs-empty" class="empty-state">保護中のタブはありません。<br>上の入力欄からページを開いてください。</p>
+      </section>
+    </div>
+
+    <details class="about-panel">
+      <summary id="about-heading">このツールについて</summary>
+      <p class="about-intro">Gofile Safe Viewer ブラウザ拡張版は、動画共有リンクを開くときに、意図しないページ移動やポップアップを減らすためのツールです。</p>
+      <dl class="about-topics">
+        <div>
+          <dt>対応リンク</dt>
+          <dd>URLに <code>gofile</code>・<code>twimg</code>・<code>mvfile</code> を含むHTTPSリンクを開けます。</dd>
+        </div>
+        <div>
+          <dt>使い方</dt>
+          <dd>X上で検索してリンクを探す場合は「Xを開いて探す」を押してください。リンクが手元にある場合は、上部の入力欄に貼り付けて「開く」を押します。また見たいページは「保護中のタブ」の「保存」からブックマークに追加できます。</dd>
+        </div>
+        <div>
+          <dt>しくみ</dt>
+          <dd>このホームは拡張機能の操作画面です。ここから開いたChrome／Edgeのタブだけに閲覧制限をかけ、許可条件に合わない移動先や通信をブロックします。<strong>SAFE</strong> は制限が有効な目印です。ページや動画は元のサイトから直接読み込み、開発者の中継サーバーは使いません。</dd>
+        </div>
+        <div>
+          <dt>ログイン・保存データ</dt>
+          <dd>ログイン状態は普段のブラウザと共通です。ブックマークはこのブラウザ内に保存し、開発者へ送信しません。利用状況の収集も行いません。</dd>
+        </div>
+        <div>
+          <dt>利用上の注意</dt>
+          <dd>ブラウザの再起動や拡張機能の再読み込み・更新後は、このホームから閲覧タブを開き直してください。サイトやファイル自体の安全性を保証する機能ではありません。ポップアップやダウンロードの抑制には限界があり、外部アプリの起動やバックグラウンド通信など、制御できない動作もあります。</dd>
+        </div>
+      </dl>
+      <div class="rule-details">
+        <h3>URLの許可条件の詳細</h3>
+        <p>判定は大文字・小文字を区別せず、ホスト名・パス・クエリを対象にします。<code>#</code> 以降は対象外です。ドメイン名だけの判定ではなく、たとえば <code>https://example.com/?q=mvfile</code> も条件に合います。ユーザー名・パスワードを含むURLは開けません。</p>
+        <p>X内の検索・リンク移動用に <code>x.com</code> とそのサブドメイン、<code>t.co</code> も許可します。<code>fun800.click</code> とそのサブドメインは、ページ内の画像・動画などの読み込み先として追加許可します。いずれもHTTPSのみです。</p>
+      </div>
+    </details>
+  </main>
+</body>
+</html>

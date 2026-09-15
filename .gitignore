@@ -1,0 +1,7 @@
+_private/
+output/
+dist/
+node_modules/
+*.env
+.env
+.env.*

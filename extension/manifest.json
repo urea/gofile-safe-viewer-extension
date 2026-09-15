@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Gofile Safe Viewer ブラウザ拡張版",
+  "version": "0.1.8",
+  "minimum_chrome_version": "129",
+  "description": "URLにgofile・twimg・mvfileを含むリンクの閲覧を補助。不要なページ移動やポップアップを抑え、Xでのリンク検索にも使えます。",
+  "permissions": [
+    "storage",
+    "tabs",
+    "declarativeNetRequest",
+    "webNavigation",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_title": "Gofile Safe Viewer ブラウザ拡張版",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "options_page": "home.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  }
+}

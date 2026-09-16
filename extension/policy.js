@@ -45,7 +45,8 @@ export function buildRules(tabIds) {
     // The server has received the request by this stage; this suppresses saving,
     // not transmission. Blob downloads and missing headers need separate handling.
     {id: 5, priority: 3, action: {type: 'block'}, condition: {
-      ...all, responseHeaders: [{header: 'content-disposition', values: ['attachment*']}]
+      tabIds: all.tabIds, resourceTypes: ['main_frame'],
+      responseHeaders: [{header: 'content-disposition', values: ['attachment*']}]
     }},
     {id: 6, priority: 4, action: {type: 'block'}, condition: {...all, regexFilter: '^https://[^/]*@'}}
   ];

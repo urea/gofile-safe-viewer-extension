@@ -29,7 +29,7 @@ const server = https.createServer({key: fs.readFileSync(key), cert: fs.readFileS
     <a id="newtab" target="_blank" href="/mvfile/next">新しいタブのリンク</a>
     <a id="download" download href="/mvfile/file">保存</a>
     <a id="external" href="mailto:fixture@example.test">メール</a>
-    <a id="blocked" href="/denied-page">対象外</a></body></html>`);
+    <a id="blocked" href="/denied-page">対象外</a><script>fetch('/mvfile/attachment-subresource').then(r=>r.text()).then(text=>window.attachmentSubresource=text).catch(()=>window.attachmentSubresource='blocked')</script></body></html>`);
 });
 const checks = [];
 async function until(fn, description, timeout = 10000) {
@@ -74,6 +74,8 @@ async function until(fn, description, timeout = 10000) {
     await until(async () => (await worker.evaluate(id => chrome.action.getBadgeText({tabId: id}), tab.id)) === 'SAFE', 'SAFE badge after navigation');
     assert.ok(requests.includes('/mvfile/ok.js'));
     assert.ok(!requests.includes('/denied.js'));
+    await until(() => page.evaluate(() => window.attachmentSubresource === 'fixture'), 'attachment subresource allowed');
+    checks.push('Content-Disposition attachment subresource allowed for in-page viewing');
     await until(() => page.locator('.video-float-ad').evaluate(e => getComputedStyle(e).display === 'none'), 'content protection');
     checks.push('Allowed navigation/resource passed; denied script never reached server; badge and ad cleanup active');
     await home.bringToFront();

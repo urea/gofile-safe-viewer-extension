@@ -24,12 +24,13 @@ test('shared text selects an allowed URL and strips sentence punctuation', () =>
   assert.equal(extractAllowedUrl('別URL https://example.test/ 本命 https://mvfile.test/a。'), 'https://mvfile.test/a');
   assert.equal(extractAllowedUrl('http://mvfile.test/'), null);
 });
-test('session rules always have explicit tab scope, main-frame coverage, and higher-priority download suppression', () => {
+test('session rules scope attachment suppression to top-level navigation', () => {
   assert.deepEqual(buildRules([]), []);
   assert.throws(() => buildRules([-1]));
   const rules = buildRules([4, 7, 4]);
   for (const rule of rules) assert.deepEqual(rule.condition.tabIds, [4, 7]);
   assert.ok(rules.find(r => r.id === 1).condition.resourceTypes.includes('main_frame'));
   assert.deepEqual(rules.find(r => r.id === 4).condition.excludedResourceTypes, ['main_frame']);
+  assert.deepEqual(rules.find(r => r.id === 5).condition.resourceTypes, ['main_frame']);
   assert.ok(rules.find(r => r.id === 5).priority > rules.find(r => r.id === 2).priority);
 });

@@ -39,10 +39,10 @@ async function installRules() {
   });
   await chrome.storage.session.set({protectedTabIds: [...protectedTabs]});
 }
-async function openProtected(raw) {
+async function openProtected(raw, {active = true} = {}) {
   const url = extractAllowedUrl(raw);
   if (!url) throw new Error('許可対象のHTTPS URLを入力してください（gofile / twimg / mvfile、x.com、t.co）。');
-  const tab = await chrome.tabs.create({url: 'about:blank', active: true});
+  const tab = await chrome.tabs.create({url: 'about:blank', active});
   try {
     protectedTabs.add(tab.id);
     // Install atomically before the first external navigation.
@@ -90,9 +90,14 @@ async function handle(message, sender) {
   const internal = source === rootUrl + 'home.html' || source === rootUrl + 'popup.html';
   const fromProtected = sender.tab && protectedTabs.has(sender.tab.id);
   if (message.type === 'is-protected') return {protected: Boolean(fromProtected), navigationPatterns: [TOKEN_PATTERN, HOST_PATTERN], audioAssist: audioAssistEnabled};
-  if (message.type === 'navigate' && fromProtected) {
+  if (message.type === 'navigate') {
+    if (!fromProtected) throw new Error('保護中の閲覧タブからのみリンクを開けます。');
+    if (message.openInBackground !== undefined && typeof message.openInBackground !== 'boolean') {
+      throw new Error('リンクの開き方を確認してください。');
+    }
     const url = parseAllowedUrl(message.url);
     if (!url) throw new Error('このリンクは許可対象外です。');
+    if (message.openInBackground) return openProtected(url, {active: false});
     await chrome.tabs.update(sender.tab.id, {url});
     return {};
   }

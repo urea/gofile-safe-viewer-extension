@@ -47,11 +47,13 @@
         stop(); tell('許可対象外への移動を止めました。'); return;
       }
       const target = anchor.target || document.querySelector('base[target]')?.target;
-      if (target && target.toLowerCase() !== '_self' || event.ctrlKey || event.metaKey || event.shiftKey || event.type === 'auxclick') {
+      const middleClick = event.type === 'auxclick' && event.button === 1;
+      const modifiedPrimaryClick = event.type === 'click' && event.button === 0 && (event.ctrlKey || event.metaKey);
+      if ((target && target.toLowerCase() !== '_self') || event.ctrlKey || event.metaKey || event.shiftKey || event.type === 'auxclick') {
         stop();
         if (event.type === 'auxclick' && event.button !== 1) return;
         if (!event.isTrusted) return;
-        chrome.runtime.sendMessage({type: 'navigate', url: href}).then(result => {
+        chrome.runtime.sendMessage({type: 'navigate', url: href, openInBackground: middleClick || modifiedPrimaryClick}).then(result => {
           if (!result?.ok) tell(result?.error || 'リンクを開けませんでした。');
         }).catch(() => {});
       }

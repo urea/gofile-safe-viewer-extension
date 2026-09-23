@@ -1,5 +1,5 @@
-export const TOKENS = Object.freeze(['gofile', 'twimg', 'mvfile']);
-export const TOKEN_PATTERN = '^https://.*(gofile|twimg|mvfile)';
+export const TOKENS = Object.freeze(['gofile', 'twimg', 'twitmg', 'mvfile']);
+export const TOKEN_PATTERN = '^https://.*(gofile|twimg|twitmg|mvfile)';
 export const HOST_PATTERN = '^https://([a-z0-9-]+\\.)*x\\.com(:[0-9]+)?/|^https://t\\.co(:[0-9]+)?/';
 export const MEDIA_PATTERN = '^https://([a-z0-9-]+\\.)*fun800\\.click(:[0-9]+)?/';
 

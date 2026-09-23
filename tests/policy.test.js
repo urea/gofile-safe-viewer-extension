@@ -4,7 +4,7 @@ import {parseAllowedUrl, extractAllowedUrl, buildRules} from '../extension/polic
 
 test('HTTPS token rules include host, path, query and ignore case', () => {
   for (const url of ['https://mvfile.example/a', 'https://example.test/MVFILE/a',
-    'https://example.test/?q=mvfile', 'https://gofile.io/d/123', 'https://pbs.twimg.com/a']) {
+    'https://example.test/?q=mvfile', 'https://gofile.io/d/123', 'https://twitmg.online/', 'https://pbs.twimg.com/a']) {
     assert.equal(parseAllowedUrl(url), new URL(url).href);
   }
 });
@@ -14,7 +14,7 @@ test('named hosts are exact or intended subdomains only', () => {
     'https://fun800.click/a', 'https://example.test/?url=x.com']) assert.equal(parseAllowedUrl(url), null);
 });
 test('HTTP, credentials, malformed and fragment-only tokens cannot grant access', () => {
-  for (const url of [null, {}, '', 'not a url', 'http://mvfile.test/', 'javascript:mvfile',
+  for (const url of [null, {}, '', 'not a url', 'http://mvfile.test/', 'http://twitmg.online/', 'javascript:mvfile',
     'file:///mvfile', 'https://example.test/#mvfile', 'https://user:pass@mvfile.test/']) {
     assert.equal(parseAllowedUrl(url), null);
   }
@@ -30,6 +30,7 @@ test('session rules scope attachment suppression to top-level navigation', () =>
   const rules = buildRules([4, 7, 4]);
   for (const rule of rules) assert.deepEqual(rule.condition.tabIds, [4, 7]);
   assert.ok(rules.find(r => r.id === 1).condition.resourceTypes.includes('main_frame'));
+  assert.match('https://twitmg.online/', new RegExp(rules.find(r => r.id === 2).condition.regexFilter, 'i'));
   assert.deepEqual(rules.find(r => r.id === 4).condition.excludedResourceTypes, ['main_frame']);
   assert.deepEqual(rules.find(r => r.id === 5).condition.resourceTypes, ['main_frame']);
   assert.ok(rules.find(r => r.id === 5).priority > rules.find(r => r.id === 2).priority);

@@ -41,7 +41,7 @@ async function installRules() {
 }
 async function openProtected(raw, {active = true} = {}) {
   const url = extractAllowedUrl(raw);
-  if (!url) throw new Error('許可対象のHTTPS URLを入力してください（gofile / twimg / mvfile、x.com、t.co）。');
+  if (!url) throw new Error('許可対象のHTTPS URLを入力してください（gofile / twimg / twitmg / mvfile、x.com、t.co）。');
   const tab = await chrome.tabs.create({url: 'about:blank', active});
   try {
     protectedTabs.add(tab.id);

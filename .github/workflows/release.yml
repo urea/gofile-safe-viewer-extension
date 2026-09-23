@@ -1,0 +1,32 @@
+name: Browser Extension Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate and package
+        run: |
+          version=$(node -p "require('./extension/manifest.json').version")
+          test "$GITHUB_REF_NAME" = "v$version"
+          node --check extension/policy.js
+          node --check extension/background.js
+          node --check extension/content.js
+          npm test
+          (cd extension && zip -q -r "../GofileSafeViewerPC-v$version.zip" .)
+          sha256sum "GofileSafeViewerPC-v$version.zip" > "GofileSafeViewerPC-v$version.zip.sha256"
+      - name: Upload release package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./extension/manifest.json').version")
+          gh release upload "v$version" "GofileSafeViewerPC-v$version.zip" "GofileSafeViewerPC-v$version.zip.sha256" --clobber

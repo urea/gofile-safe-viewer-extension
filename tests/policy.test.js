@@ -9,9 +9,11 @@ test('HTTPS token rules include host, path, query and ignore case', () => {
   }
 });
 test('named hosts are exact or intended subdomains only', () => {
-  for (const url of ['https://x.com/home', 'https://api.x.com/a', 'https://t.co/123']) assert.ok(parseAllowedUrl(url));
+  for (const url of ['https://x.com/home', 'https://api.x.com/a', 'https://t.co/123',
+    'https://goflie.top/', 'https://cdn.goflie.top/video']) assert.ok(parseAllowedUrl(url));
   for (const url of ['https://notx.com/', 'https://x.com.evil.test/', 'https://sub.t.co/',
-    'https://fun800.click/a', 'https://example.test/?url=x.com']) assert.equal(parseAllowedUrl(url), null);
+    'https://fun800.click/a', 'https://example.test/?url=x.com',
+    'https://goflie.top.evil.test/', 'https://example.test/?url=goflie.top']) assert.equal(parseAllowedUrl(url), null);
 });
 test('HTTP, credentials, malformed and fragment-only tokens cannot grant access', () => {
   for (const url of [null, {}, '', 'not a url', 'http://mvfile.test/', 'http://twitmg.online/', 'javascript:mvfile',
@@ -31,6 +33,9 @@ test('session rules scope attachment suppression to top-level navigation', () =>
   for (const rule of rules) assert.deepEqual(rule.condition.tabIds, [4, 7]);
   assert.ok(rules.find(r => r.id === 1).condition.resourceTypes.includes('main_frame'));
   assert.match('https://twitmg.online/', new RegExp(rules.find(r => r.id === 2).condition.regexFilter, 'i'));
+  const namedHosts = new RegExp(rules.find(r => r.id === 3).condition.regexFilter, 'i');
+  assert.match('https://cdn.goflie.top/video', namedHosts);
+  assert.doesNotMatch('https://goflie.top.evil.test/video', namedHosts);
   assert.deepEqual(rules.find(r => r.id === 4).condition.excludedResourceTypes, ['main_frame']);
   assert.deepEqual(rules.find(r => r.id === 5).condition.resourceTypes, ['main_frame']);
   assert.ok(rules.find(r => r.id === 5).priority > rules.find(r => r.id === 2).priority);

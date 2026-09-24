@@ -19,7 +19,7 @@
       <button id="open-x-button" class="x-button" type="button">Xを開いて探す <span aria-hidden="true">↗</span></button>
       <form id="open-form" class="open-form" novalidate>
         <label class="sr-only" for="url-input">開くURL</label>
-        <input id="url-input" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="gofile・twimg・twitmg・mvfile を含むHTTPS URL" required>
+        <input id="url-input" name="url" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="gofile・twimg・twitmg・mvfile を含むURL、goflie.top" required>
         <button id="open-button" class="button button-primary" type="submit">開く</button>
       </form>
       <label class="audio-option" for="audio-assist-toggle"><input id="audio-assist-toggle" type="checkbox" aria-describedby="audio-assist-hint">音声ONを補助</label>
@@ -61,7 +61,7 @@
       <dl class="about-topics">
         <div>
           <dt>対応リンク</dt>
-          <dd>URLに <code>gofile</code>・<code>twimg</code>・<code>twitmg</code>・<code>mvfile</code> を含むHTTPSリンクを開けます。</dd>
+          <dd>URLに <code>gofile</code>・<code>twimg</code>・<code>twitmg</code>・<code>mvfile</code> を含むHTTPSリンクと、<code>goflie.top</code> またはそのサブドメインのHTTPSリンクを開けます。</dd>
         </div>
         <div>
           <dt>使い方</dt>
@@ -87,7 +87,7 @@
       <div class="rule-details">
         <h3>URLの許可条件の詳細</h3>
         <p>判定は大文字・小文字を区別せず、ホスト名・パス・クエリを対象にします。<code>#</code> 以降は対象外です。ドメイン名だけの判定ではなく、たとえば <code>https://example.com/?q=mvfile</code> も条件に合います。ユーザー名・パスワードを含むURLは開けません。</p>
-        <p>X内の検索・リンク移動用に <code>x.com</code> とそのサブドメイン、<code>t.co</code> も許可します。<code>fun800.click</code> とそのサブドメインは、ページ内の画像・動画などの読み込み先として追加許可します。いずれもHTTPSのみです。</p>
+        <p><code>goflie.top</code> とそのサブドメインはホスト名で判定します。X内の検索・リンク移動用に <code>x.com</code> とそのサブドメイン、<code>t.co</code> も許可します。<code>fun800.click</code> とそのサブドメインは、ページ内の画像・動画などの読み込み先として追加許可します。いずれもHTTPSのみです。</p>
       </div>
     </details>
   </main>

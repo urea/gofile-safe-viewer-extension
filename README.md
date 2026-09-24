@@ -2,7 +2,7 @@
 
 **動画共有リンクを開くときの、意図しないページ移動やポップアップを減らすツールです。**
 
-URLに `gofile`・`twimg`・`twitmg`・`mvfile` を含むHTTPSリンクが対象です。Xは、X上で検索してリンクを探すための入口として利用できます。Chrome / Microsoft Edgeのタブに閲覧制限をかける拡張機能で、ページや動画は元のサイトから直接読み込みます。
+URLに `gofile`・`twimg`・`twitmg`・`mvfile` を含むHTTPSリンクと、`goflie.top` またはそのサブドメインのHTTPSリンクが対象です。Xは、X上で検索してリンクを探すための入口として利用できます。Chrome / Microsoft Edgeのタブに閲覧制限をかける拡張機能で、ページや動画は元のサイトから直接読み込みます。
 
 **[最新版をダウンロード](https://github.com/urea/gofile-safe-viewer-extension/releases/latest)** · [Android版](https://github.com/urea/gofile-safe-viewer)
 
@@ -23,7 +23,7 @@ URLに `gofile`・`twimg`・`twitmg`・`mvfile` を含むHTTPSリンクが対象
 
 Chrome / Microsoft Edge **129以降**が必要です。現在はストア未公開のため、GitHubのZIPを手動で読み込みます。ビルドやNode.jsのインストールは不要です。
 
-1. [最新Release](https://github.com/urea/gofile-safe-viewer-extension/releases/latest)の **Assets** から `GofileSafeViewerPC-v0.1.13.zip` をダウンロードします。
+1. [最新Release](https://github.com/urea/gofile-safe-viewer-extension/releases/latest)の **Assets** から `GofileSafeViewerPC-v0.1.14.zip` をダウンロードします。
 2. ZIPを展開し、今後も使用する場所にフォルダを置きます。読み込み後もこのフォルダは残してください。
 3. Chromeは `chrome://extensions`、Edgeは `edge://extensions` をアドレス欄に入力して開きます。
 4. **デベロッパーモード**を有効にし、**パッケージ化されていない拡張機能を読み込む**を選びます。
@@ -86,12 +86,13 @@ Chrome / Microsoft Edge **129以降**が必要です。現在はストア未公�
 | 対象 | ページ移動 | ページ内の読み込み |
 | --- | --- | --- |
 | URLに `gofile`・`twimg`・`twitmg`・`mvfile` を含む | 許可 | 許可 |
+| `goflie.top` とそのサブドメイン | 許可 | 許可 |
 | `x.com` とそのサブドメイン | 許可 | 許可 |
 | `t.co` 完全一致 | 許可。転送先も判定 | 許可 |
 | `fun800.click` とそのサブドメイン | 上記条件を満たさなければ遮断 | 許可 |
 | その他 | 遮断 | 対象タブに関連付いた通信を遮断 |
 
-すべてHTTPSのみです。文字列判定は大文字・小文字を区別せず、ホスト名・パス・クエリが対象です。`#` 以降は許可の根拠になりません。ユーザー名・パスワードを含むURLは拒否します。
+すべてHTTPSのみです。`goflie.top` はホスト名で判定し、文字列判定は大文字・小文字を区別せず、ホスト名・パス・クエリが対象です。`#` 以降は許可の根拠になりません。ユーザー名・パスワードを含むURLは拒否します。
 
 **厳密なドメイン許可リストではありません。** たとえば `https://example.com/?q=mvfile` も許可されます。一方、`goflile.io` は `gofile` とは綴りが異なるため、それだけでは許可されません。
 

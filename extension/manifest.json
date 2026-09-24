@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Gofile Safe Viewer ブラウザ拡張版",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "minimum_chrome_version": "129",
-  "description": "URLにgofile・twimg・twitmg・mvfileを含むリンクの閲覧を補助。不要なページ移動やポップアップを抑え、Xでのリンク検索にも使えます。",
+  "description": "URLにgofile・twimg・twitmg・mvfileを含むリンクとgoflie.topの閲覧を補助。不要なページ移動やポップアップを抑え、Xでのリンク検索にも使えます。",
   "permissions": [
     "storage",
     "tabs",

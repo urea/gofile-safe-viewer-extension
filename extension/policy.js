@@ -1,6 +1,6 @@
 export const TOKENS = Object.freeze(['gofile', 'twimg', 'twitmg', 'mvfile']);
 export const TOKEN_PATTERN = '^https://.*(gofile|twimg|twitmg|mvfile)';
-export const HOST_PATTERN = '^https://([a-z0-9-]+\\.)*x\\.com(:[0-9]+)?/|^https://t\\.co(:[0-9]+)?/';
+export const HOST_PATTERN = '^https://([a-z0-9-]+\\.)*x\\.com(:[0-9]+)?/|^https://t\\.co(:[0-9]+)?/|^https://([a-z0-9-]+\\.)*goflie\\.top(:[0-9]+)?/';
 export const MEDIA_PATTERN = '^https://([a-z0-9-]+\\.)*fun800\\.click(:[0-9]+)?/';
 
 // URL fragments are never sent over the network, so they cannot grant permission.
@@ -11,7 +11,8 @@ export function parseAllowedUrl(value) {
     if (url.protocol !== 'https:' || url.username || url.password) return null;
     const networkUrl = url.href.split('#')[0].toLowerCase();
     if (TOKENS.some(token => networkUrl.includes(token)) || url.hostname === 'x.com'
-        || url.hostname.endsWith('.x.com') || url.hostname === 't.co') return url.href;
+        || url.hostname.endsWith('.x.com') || url.hostname === 't.co'
+        || url.hostname === 'goflie.top' || url.hostname.endsWith('.goflie.top')) return url.href;
   } catch { /* Invalid input is not navigable. */ }
   return null;
 }
